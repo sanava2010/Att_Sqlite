@@ -2,6 +2,8 @@ package com.ava.att;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,17 +22,26 @@ public class MainActivity extends ListActivity {
 
     ArrayList<String> list = new ArrayList<String>();
     ArrayAdapter<String> adapter;
-    DatabaseHelper myDB;
-
-
+    //DatabaseHelper myDB;
+    public static SQLiteDatabase mydatabase;
+    public static String Tbname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btn = (Button) findViewById(R.id.button);
-        myDB = new DatabaseHelper(this);
+        //myDB = new DatabaseHelper(this);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
-
+        mydatabase = openOrCreateDatabase("attendance.db",MODE_PRIVATE,null);
+        Cursor c=mydatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name",null);
+        if(c.moveToFirst())
+        {
+            while(!c.isAfterLast())
+            {
+                list.add(c.getString(c.getColumnIndex("name")));
+                c.moveToNext();
+            }
+        }
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,11 +58,12 @@ public class MainActivity extends ListActivity {
     }
     @Override
     public void onListItemClick(ListView listView, View itemView, int position, long id){
-        String Tbname=(String)listView.getItemAtPosition(position);
-        // //To be checked!!!!!!!!
-
-
-        myDB.getTable(Tbname);
+        Tbname=(String)listView.getItemAtPosition(position);
+        //String del="delete from "+Tbname;
+       // mydatabase.execSQL(del);
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + Tbname + " (RollNo REAL PRIMARY KEY AUTOINCREMENT,Name TEXT);");
+        //myDB.getWritableDatabase();
+       // myDB.createTable(Tbname);
         Intent intent=new Intent(MainActivity.this,StudChecklist.class);
         startActivityForResult(intent,1);
 
@@ -69,6 +81,5 @@ public class MainActivity extends ListActivity {
                 //Write your code if there's no result
             }
         }
-
     }
 }

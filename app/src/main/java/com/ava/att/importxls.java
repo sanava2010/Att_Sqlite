@@ -41,7 +41,7 @@ public class importxls extends AppCompatActivity {
     private String[] FileNameStrings;
     private File[] listFile;
     File file;
-    DatabaseHelper myDB=new DatabaseHelper(this);
+    //DatabaseHelper myDB=new DatabaseHelper(this);
 
     Button btnUpDirectory,btnSDCard;
 
@@ -191,13 +191,29 @@ public class importxls extends AppCompatActivity {
     }
     public void AddData(float roll,String Name) {
 
-        boolean insertData = myDB.addData(roll,Name);
-
+        addData(roll,Name);
+        /*
         if(insertData==true){
             Toast.makeText(this, "Data Successfully Inserted!", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(this, "Something went wrong in adding data in db:(.", Toast.LENGTH_LONG).show();
-        }
+        }*/
+    }
+    public void addData(float roll,String name) {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        //ContentValues contentValues = new ContentValues();
+        //contentValues.put(COL1,roll);
+        //contentValues.put(COL2, name);
+        MainActivity.mydatabase.execSQL("INSERT INTO " + MainActivity.Tbname + " VALUES("+ roll +","+"'"+name +"'"+");");
+        Log.d(TAG, "Data added is " + roll + name );
+        //long result = db.insert(TABLE_NAME, null, contentValues);
+
+        //if date as inserted incorrectly it will return -1
+        /*if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }*/
     }
     private void printDataToLog() {
         Log.d(TAG, "printDataToLog: Printing data to log...");
