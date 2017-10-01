@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ScrollView;
@@ -20,7 +22,12 @@ import com.ava.att.MainActivity;
 import com.ava.att.R;
 import com.ava.att.importxls;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static android.R.attr.name;
 
@@ -28,16 +35,20 @@ public class StudChecklist extends AppCompatActivity {
     public static ArrayList<Student> StudList=new ArrayList<>();
     ArrayList<CheckBox>arrayCheckBox=new ArrayList<>();
      LinearLayout CheckBoxContainer;
+    Button bSave;
     CheckBox cb;
     //DatabaseHelper myDB=new DatabaseHelper(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // ScrollView sv = new ScrollView(this);
+       ScrollView sv = new ScrollView(this);
         //ll.setOrientation(LinearLayout.VERTICAL);
         //sv.addView(CheckBoxContainer);
+        bSave=(Button) findViewById(R.id.next_button);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stud_checklist);
         CheckBoxContainer =(LinearLayout)findViewById(R.id.checkbox_container);
+
+        //sv.addView(bSave);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,6 +69,13 @@ public class StudChecklist extends AppCompatActivity {
             Intent i4 = new Intent(StudChecklist.this, importxls.class);
             startActivityForResult(i4,1);
         }
+        else
+        {
+            if(id==R.id.action_Export)
+            {
+                //ToDo
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -72,9 +90,9 @@ public class StudChecklist extends AppCompatActivity {
             for (int i = 0; i < dataFromTable.getCount(); i++)
             {
                 cb=new CheckBox(this);
-                cb.setId(i);
+                //cb.setId(i);
                 cb.setText(dataFromTable.getDouble(0)+dataFromTable.getString(1));
-                Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
                 arrayCheckBox.add(cb);
                 CheckBoxContainer.addView(cb);
                 dataFromTable.moveToNext();
@@ -90,6 +108,64 @@ public class StudChecklist extends AppCompatActivity {
             }*/
             dataFromTable.close();
         }
+    }
+    public void save(View v)
+    {
+        Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
+        Date time=cal.getTime();
+        DateFormat localTime=new SimpleDateFormat("HH:mm");
+        localTime.setTimeZone(TimeZone.getTimeZone("GMT+5:30"));
+        String today2=localTime.format(time);
+        String replaceString2=today2.replaceAll(":","_");
+
+
+        Date today1= Calendar.getInstance().getTime();
+        SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");
+       String date=formatter.format(today1);
+        String replaceString=date.replaceAll("-","_");
+
+        String finalDate=replaceString+"_"+replaceString2;
+       //Toast.makeText(this, ""+finalDate, Toast.LENGTH_SHORT).show();
+       String alter="ALTER TABLE "+MainActivity.Tbname+" ADD COLUMN _"+finalDate+" INTEGER;";
+        MainActivity.mydatabase.execSQL(alter);
+       // Toast.makeText(this, "Alter executed!", Toast.LENGTH_SHORT).show();
+        Cursor dataFromTable =getData();
+        dataFromTable.moveToFirst();
+        for(CheckBox cb:arrayCheckBox){
+            String str=dataFromTable.getDouble(0)+dataFromTable.getString(1);
+
+            if(cb.isChecked()) {
+                if (str.equals(cb.getText().toString()))
+                {
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =1 WHERE RollNo= "+dataFromTable.getDouble(0)+";";
+                    MainActivity.mydatabase.execSQL(set);
+                    //Toast.makeText(this, "Updated 1 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
+                }
+
+                //Toast.makeText(this, ""+cb.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+           else
+            {
+                if (str.equals(cb.getText().toString()))
+                {
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =0 WHERE RollNo= "+dataFromTable.getDouble(0)+";";
+                    MainActivity.mydatabase.execSQL(set);
+                    //Toast.makeText(this, "Updated 0 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
+                }
+            }
+            dataFromTable.moveToNext();
+
+        }
+       dataFromTable.close();
+       Cursor resultSet =MainActivity.mydatabase.rawQuery("Select _"+finalDate+" from "+ MainActivity.Tbname,null);
+        resultSet.moveToFirst();
+        for (int i = 0; i < resultSet.getCount(); i++)
+        {
+            Toast.makeText(this, ""+resultSet.getInt(0),Toast.LENGTH_SHORT).show();
+            resultSet.moveToNext();
+        }
+        resultSet.close();
+
     }
     public Cursor getData()
     {
@@ -120,9 +196,9 @@ public class StudChecklist extends AppCompatActivity {
                     for (int i = 0; i < dataFromTable.getCount(); i++)
                     {
                         cb=new CheckBox(this);
-                        //cb.setId(j);
+                        cb.setId(i);
                         cb.setText(dataFromTable.getDouble(0)+dataFromTable.getString(1));
-                        Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
                         arrayCheckBox.add(cb);
                         CheckBoxContainer.addView(cb);
                         dataFromTable.moveToNext();
