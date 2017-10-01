@@ -91,7 +91,7 @@ public class StudChecklist extends AppCompatActivity {
             {
                 cb=new CheckBox(this);
                 //cb.setId(i);
-                cb.setText(dataFromTable.getDouble(0)+dataFromTable.getString(1));
+                cb.setText(dataFromTable.getString(0)+dataFromTable.getString(1));
                // Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
                 arrayCheckBox.add(cb);
                 CheckBoxContainer.addView(cb);
@@ -132,12 +132,12 @@ public class StudChecklist extends AppCompatActivity {
         Cursor dataFromTable =getData();
         dataFromTable.moveToFirst();
         for(CheckBox cb:arrayCheckBox){
-            String str=dataFromTable.getDouble(0)+dataFromTable.getString(1);
+            String str=dataFromTable.getString(0)+dataFromTable.getString(1);
 
             if(cb.isChecked()) {
                 if (str.equals(cb.getText().toString()))
                 {
-                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =1 WHERE RollNo= "+dataFromTable.getDouble(0)+";";
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =1 WHERE RollNo= "+dataFromTable.getString(0)+";";
                     MainActivity.mydatabase.execSQL(set);
                     //Toast.makeText(this, "Updated 1 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
                 }
@@ -148,7 +148,7 @@ public class StudChecklist extends AppCompatActivity {
             {
                 if (str.equals(cb.getText().toString()))
                 {
-                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =0 WHERE RollNo= "+dataFromTable.getDouble(0)+";";
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =0 WHERE RollNo= "+dataFromTable.getString(0)+";";
                     MainActivity.mydatabase.execSQL(set);
                     //Toast.makeText(this, "Updated 0 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
                 }
@@ -197,7 +197,7 @@ public class StudChecklist extends AppCompatActivity {
                     {
                         cb=new CheckBox(this);
                         cb.setId(i);
-                        cb.setText(dataFromTable.getDouble(0)+dataFromTable.getString(1));
+                        cb.setText(dataFromTable.getString(0)+dataFromTable.getString(1));
                         //Toast.makeText(this, ""+dataFromTable.getDouble(0)+dataFromTable.getString(1), Toast.LENGTH_SHORT).show();
                         arrayCheckBox.add(cb);
                         CheckBoxContainer.addView(cb);

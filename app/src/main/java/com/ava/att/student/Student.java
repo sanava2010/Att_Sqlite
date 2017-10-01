@@ -6,15 +6,15 @@ package com.ava.att.student;
 
 public class Student {
 
-    private float roll;
+    private String roll;
     private String name;
 
-    public Student(float x, String y) {
+    public Student(String x, String y) {
         this.roll = x;
         this.name = y;
     }
 
-    public float getRoll() {
+    public String getRoll() {
         return roll;
     }
 
@@ -22,7 +22,7 @@ public class Student {
         return name;
     }
 
-    public void setRoll(int roll) {
+    public void setRoll(String roll) {
         this.roll = roll;
     }
 

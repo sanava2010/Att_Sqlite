@@ -165,7 +165,7 @@ public class importxls extends AppCompatActivity {
 
             //use try catch to make sure there are no "" that try to parse into doubles.
             try{
-                float x = Float.parseFloat(columns[0]);
+                String x = columns[0];
                 String y = columns[1];
 
                 String cellInfo = "(x,y): (" + x + "," + y + ")";
@@ -189,7 +189,7 @@ public class importxls extends AppCompatActivity {
         setResult(MainActivity.RESULT_OK, returnIntent);
         finish();
     }
-    public void AddData(float roll,String Name) {
+    public void AddData(String roll,String Name) {
 
         addData(roll,Name);
         /*
@@ -199,7 +199,7 @@ public class importxls extends AppCompatActivity {
             Toast.makeText(this, "Something went wrong in adding data in db:(.", Toast.LENGTH_LONG).show();
         }*/
     }
-    public void addData(float roll,String name) {
+    public void addData(String roll,String name) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //ContentValues contentValues = new ContentValues();
         //contentValues.put(COL1,roll);
@@ -219,7 +219,7 @@ public class importxls extends AppCompatActivity {
         Log.d(TAG, "printDataToLog: Printing data to log...");
 
         for(int i = 0; i< StudChecklist.StudList.size(); i++){
-            float x = StudChecklist.StudList.get(i).getRoll();
+            String x = StudChecklist.StudList.get(i).getRoll();
             String y = StudChecklist.StudList.get(i).getName();
             Log.d(TAG, "printDataToLog: (x,y): (" + x + "," + y + ")");
         }

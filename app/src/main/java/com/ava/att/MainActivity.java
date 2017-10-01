@@ -61,7 +61,7 @@ public class MainActivity extends ListActivity {
         Tbname=(String)listView.getItemAtPosition(position);
         //String del="delete from "+Tbname;
        // mydatabase.execSQL(del);
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + Tbname + " (RollNo REAL PRIMARY KEY AUTOINCREMENT,Name TEXT);");
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS " + Tbname + " (RollNo TEXT PRIMARY KEY,Name TEXT);");
         //myDB.getWritableDatabase();
        // myDB.createTable(Tbname);
         Intent intent=new Intent(MainActivity.this,StudChecklist.class);
