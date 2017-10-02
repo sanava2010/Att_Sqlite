@@ -155,7 +155,7 @@ public class StudChecklist extends AppCompatActivity {
                 if(id==R.id.action_defaulter)
                 {
                     Cursor defCursor =getData();
-                    int colCount2=defCursor.getColumnCount()-2;
+                    int colCount2=defCursor.getColumnCount();
                     File sd = Environment.getExternalStorageDirectory();
                     String csvFile = "Defaulter_List.xls";
 
@@ -178,22 +178,24 @@ public class StudChecklist extends AppCompatActivity {
                         sheet.addCell(new Label(0, 0, "RollNo"));
                         sheet.addCell(new Label(1, 0, "Name"));
                         sheet.addCell(new Label(2, 0, "Percentage"));
-                        int sum=0,per;
-                        float fsum=0;
+                        int sum=0,per=0;
+                        double fsum=0;
                         if (defCursor.moveToFirst()) {
                             do {
-                                sum=0;fsum=0;
+                                sum=0;
                                 String RollNo = defCursor.getString(0);
                                 String Name = defCursor.getString(1);
                                 for(int j=2;j<colCount2;j++)
                                 {
                                     per=defCursor.getInt(j);
                                     sum=sum+per;
+
                                 }
-                                fsum=(sum/colCount2)*100;
+                                fsum=(((double)sum/(colCount2-3))*100);
+                                Toast.makeText(this,""+fsum, Toast.LENGTH_SHORT).show();
                                 if(fsum<75)
                                 {
-                                    String fper=Float.toString(fsum);
+                                    String fper=Double.toString(fsum);
                                     int i = defCursor.getPosition() + 1;
                                     sheet.addCell(new Label(0, i, RollNo));
                                     sheet.addCell(new Label(1, i, Name));

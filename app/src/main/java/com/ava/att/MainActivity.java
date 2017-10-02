@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +24,7 @@ public class MainActivity extends ListActivity {
 
     ArrayList<String> list = new ArrayList<String>();
     ArrayAdapter<String> adapter;
+    ListView lv;
     //DatabaseHelper myDB;
     public static SQLiteDatabase mydatabase;
     public static String Tbname;
