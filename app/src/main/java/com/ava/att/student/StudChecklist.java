@@ -2,6 +2,7 @@ package com.ava.att.student;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +23,23 @@ import com.ava.att.MainActivity;
 import com.ava.att.R;
 import com.ava.att.importxls;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
+
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 
 import static android.R.attr.name;
 
@@ -73,9 +85,140 @@ public class StudChecklist extends AppCompatActivity {
         {
             if(id==R.id.action_Export)
             {
-                //ToDo
+                Cursor cursor =getData();
+                int colCount=cursor.getColumnCount();
+                File sd = Environment.getExternalStorageDirectory();
+                String csvFile = "myData1.xls";
+
+                File directory = new File(sd.getAbsolutePath());
+                String dir=directory.toString();
+                Toast.makeText(this,""+dir, Toast.LENGTH_SHORT).show();
+                //create directory if not exist
+                if (!directory.isDirectory()) {
+                    directory.mkdirs();
+                }
+                try {
+
+                    //file path
+                    File file = new File(directory, csvFile);
+                    WorkbookSettings wbSettings = new WorkbookSettings();
+                    wbSettings.setLocale(new Locale("en", "EN"));
+                    WritableWorkbook workbook;
+                    workbook = Workbook.createWorkbook(file, wbSettings);
+                    //Excel sheet name. 0 represents first sheet
+                    WritableSheet sheet = workbook.createSheet("StudentsAttendance", 0);
+                    // column and row
+                    sheet.addCell(new Label(0, 0, "RollNo"));
+                    sheet.addCell(new Label(1, 0, "Name"));
+                    for(int k=1;k<colCount;k++)
+                    {
+                        String colName=cursor.getColumnName(k);
+                        sheet.addCell(new Label(k, 0, colName));
+
+                    }
+
+                    if (cursor.moveToFirst()) {
+                        do {
+                            String RollNo = cursor.getString(0);
+                            String Name = cursor.getString(1);
+
+                            int i = cursor.getPosition() + 1;
+                            sheet.addCell(new Label(0, i, RollNo));
+                            sheet.addCell(new Label(1, i, Name));
+                            for(int j=1;j<colCount;j++)
+                            {
+                                String att=cursor.getString(j);
+                                sheet.addCell(new Label(j,i,att));
+                            }
+                        } while (cursor.moveToNext());
+                    }
+
+                    //closing cursor
+                    cursor.close();
+                    workbook.write();
+                    workbook.close();
+                    Toast.makeText(getApplication(),
+                            "Data Exported in a Excel Sheet", Toast.LENGTH_SHORT).show();
+                } catch(IOException e){
+                    e.printStackTrace();
+                } catch (RowsExceededException e) {
+
+                    e.printStackTrace();
+                } catch (WriteException e) {
+                    e.printStackTrace();
+
+                }
+                cursor.close();
             }
-        }
+            else
+            {
+                if(id==R.id.action_defaulter)
+                {
+                    Cursor defCursor =getData();
+                    int colCount2=defCursor.getColumnCount()-2;
+                    File sd = Environment.getExternalStorageDirectory();
+                    String csvFile = "Defaulter_List.xls";
+
+                    File directory = new File(sd.getAbsolutePath());
+                    //create directory if not exist
+                    if (!directory.isDirectory()) {
+                        directory.mkdirs();
+                    }
+                    try {
+
+                        //file path
+                        File file = new File(directory, csvFile);
+                        WorkbookSettings wbSettings = new WorkbookSettings();
+                        wbSettings.setLocale(new Locale("en", "EN"));
+                        WritableWorkbook workbook;
+                        workbook = Workbook.createWorkbook(file, wbSettings);
+                        //Excel sheet name. 0 represents first sheet
+                        WritableSheet sheet = workbook.createSheet("userList", 0);
+                        // column and row
+                        sheet.addCell(new Label(0, 0, "RollNo"));
+                        sheet.addCell(new Label(1, 0, "Name"));
+                        sheet.addCell(new Label(2, 0, "Percentage"));
+                        int sum=0,per;
+                        float fsum=0;
+                        if (defCursor.moveToFirst()) {
+                            do {
+                                sum=0;fsum=0;
+                                String RollNo = defCursor.getString(0);
+                                String Name = defCursor.getString(1);
+                                for(int j=2;j<colCount2;j++)
+                                {
+                                    per=defCursor.getInt(j);
+                                    sum=sum+per;
+                                }
+                                fsum=(sum/colCount2)*100;
+                                if(fsum<75)
+                                {
+                                    String fper=Float.toString(fsum);
+                                    int i = defCursor.getPosition() + 1;
+                                    sheet.addCell(new Label(0, i, RollNo));
+                                    sheet.addCell(new Label(1, i, Name));
+                                    sheet.addCell(new Label(2, i, fper));
+                                }
+
+                            } while (defCursor.moveToNext());
+                        }
+
+                        //closing cursor
+                        defCursor.close();
+                        workbook.write();
+                        workbook.close();
+                        Toast.makeText(getApplication(),
+                                "Data Exported in a Excel Sheet", Toast.LENGTH_SHORT).show();
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    } catch (WriteException e) {
+                        e.printStackTrace();
+
+                    }
+                }
+            }
+            }
+
         return super.onOptionsItemSelected(item);
     }
     @Override
