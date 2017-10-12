@@ -204,7 +204,7 @@ public class importxls extends AppCompatActivity {
         //ContentValues contentValues = new ContentValues();
         //contentValues.put(COL1,roll);
         //contentValues.put(COL2, name);
-        MainActivity.mydatabase.execSQL("INSERT INTO " + MainActivity.Tbname + " VALUES("+ roll +","+"'"+name +"'"+");");
+        MainActivity.mydatabase.execSQL("INSERT INTO " + MainActivity.Tbname + " VALUES("+"'"+roll+"'" +","+"'"+name +"'"+");");
         Log.d(TAG, "Data added is " + roll + name );
         //long result = db.insert(TABLE_NAME, null, contentValues);
 

@@ -282,7 +282,7 @@ public class StudChecklist extends AppCompatActivity {
             if(cb.isChecked()) {
                 if (str.equals(cb.getText().toString()))
                 {
-                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =1 WHERE RollNo= "+dataFromTable.getString(0)+";";
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =1 WHERE RollNo= "+"'"+dataFromTable.getString(0)+"'"+";";
                     MainActivity.mydatabase.execSQL(set);
                     //Toast.makeText(this, "Updated 1 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
                 }
@@ -293,7 +293,7 @@ public class StudChecklist extends AppCompatActivity {
             {
                 if (str.equals(cb.getText().toString()))
                 {
-                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =0 WHERE RollNo= "+dataFromTable.getString(0)+";";
+                    String set="UPDATE "+ MainActivity.Tbname+" SET _"+finalDate+" =0 WHERE RollNo= "+"'"+dataFromTable.getString(0)+"'"+";";
                     MainActivity.mydatabase.execSQL(set);
                     //Toast.makeText(this, "Updated 0 for "+dataFromTable.getDouble(0), Toast.LENGTH_SHORT).show();
                 }
@@ -306,11 +306,11 @@ public class StudChecklist extends AppCompatActivity {
         resultSet.moveToFirst();
         for (int i = 0; i < resultSet.getCount(); i++)
         {
-            Toast.makeText(this, ""+resultSet.getInt(0),Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, ""+resultSet.getInt(0),Toast.LENGTH_SHORT).show();
             resultSet.moveToNext();
         }
         resultSet.close();
-
+        Toast.makeText(this, "Attendance saved",Toast.LENGTH_SHORT).show();
     }
     public Cursor getData()
     {
@@ -324,7 +324,7 @@ public class StudChecklist extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 String returnValue = data.getStringExtra("key2");
-                Toast.makeText(getApplicationContext(), "" + returnValue, Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "" + returnValue, Toast.LENGTH_LONG).show();
                 /*
                 for(int j=0;j<StudList.size();j++)
                 {
