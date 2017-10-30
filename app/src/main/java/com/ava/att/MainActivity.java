@@ -80,7 +80,7 @@ public class MainActivity extends ListActivity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        menu.add(Menu.NONE, 0, 0, "Rename");
+       // menu.add(Menu.NONE, 0, 0, "Rename");
         menu.add(Menu.NONE, 1, 1, "Delete");
 
 
@@ -95,9 +95,9 @@ public class MainActivity extends ListActivity {
         RenTable=adapter.getItem(index);
         switch(menuItemIndex)
         {
-            case 0: displayPopupWindow();
+            //case 0: displayPopupWindow();
                     //
-                break;
+               // break;
             case 1:list.remove(index);
                     adapter.notifyDataSetChanged();
                     mydatabase.execSQL("DROP TABLE " + delTable + ";");
